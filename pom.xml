@@ -36,7 +36,7 @@
     <repository>
       <id>bintray-acgray-maven-repo</id>
       <name>acgray-maven-repo</name>
-      <url>https://api.bintray.com/maven/acgray/maven-repo/jplow/;publish=1</url>
+      <url>https://api.bintray.com/maven/acgray/maven-repo/jplow</url>
     </repository>
   </distributionManagement>
 
