@@ -20,7 +20,7 @@
 
   <groupId>io.github.acgray</groupId>
   <artifactId>jplow</artifactId>
-  <version>0.1</version>
+  <version>0.2-SNAPSHOT</version>
 
   <properties>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -29,7 +29,7 @@
 
   <scm>
     <developerConnection>scm:git:https://github.com/acgray/jplow.git</developerConnection>
-    <tag>jplow-0.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
