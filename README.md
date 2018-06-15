@@ -33,7 +33,9 @@ Then include the dependency as normal:
 </dependency>
 ```
 
-## Usage
+## Features
+
+### Self-describing objects
 
 The central feature of the library is the `SelfDescribing<T>` class, which
 wraps a data type instance with the metadata of the Iglu self-describing JSON system.
@@ -43,7 +45,7 @@ A quick and clean pattern is to use the excellent [Immutables](https://immutable
 library with its [Gson Type Adapters generation](http://immutables.github.io/json.html#generating-type-adapters)
 to represent the wrapped type.
 
-### Example
+#### Self-describing example
 
 Self-describing JSON object:
 
@@ -93,3 +95,51 @@ SelfDescribing<ProductViewV1> productView =
 
 String productName = productView.data().productName()
 ```
+
+### Snowplow events
+
+The `SnowplowEvent` class represents the [Snowplow Canonical Event Format](https://github.com/snowplow/snowplow/wiki/canonical-event-model).
+It can instantiate events from the Snowplow Enriched TSV format as follows:
+
+```java
+String input = "some_app_id\tweb\t....";
+
+SnowplowEvent event = SnowplowEvent.fromTsv(input);
+
+String appId = event.appId();
+
+List<SelfDescribing<JsonObject>> contexts = event.getContextObjects();
+
+try {
+    SelfDescribing<PageContextV1> pageContext = event
+        .<PageContextV1>getContextForSchema(SchemaPattern.builder()
+            .vendor("com.acme")
+            .name("page_context")
+            .major(1)
+            .build());
+catch (SnowplowEvent.ContextNotPresent exc) {
+    // there was no page_context in this event
+}
+```
+
+### Bad events
+
+The `BadRequest`, `CollectorPayload` and `TrackerProtocol` classes provide support for working
+with events rejected by the Snowplow Enrich process.
+
+Example:
+
+```java
+String badLine = "{\n" +
+                "    \"line\": \"....\",\n" +
+                "    \"failureTstamp\": \"2018-01-01T00:00:00Z\",\n" +
+                "    \"errors\": [..] \n" +
+                "}";
+
+BadRequest badRequest = BadRequest.fromString(badLine);
+
+CollectorPayload payload = badRequest.deserializePayload();
+List<TrackerProtocol> failedEvents = badRequest.getRawEvents();
+List<BadRequest.BadRequestError> errors = badRequest.errors();
+```
+
